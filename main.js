@@ -12,17 +12,31 @@ class Rectangle {
 		this.down = false;
 	}
 	update() {
+		var prevx = this.x;
+		var prevy = this.y;
+		
 		if (this.left == true) {
 			this.x -= 1;
 		}
 		if (this.right == true) {
 			this.x += 1;
 		}
+		for (var i = 0; i < rectArray.length; i++) {
+			if (rectArray[i] != this && checkCollision(this, rectArray[i])) {
+				this.x = prevx;
+			}
+		}
+		
 		if (this.up == true) {
 			this.y -= 1;
 		}
 		if (this.down == true) {
 			this.y += 1;
+		}
+		for (var i = 0; i < rectArray.length; i++) {
+			if (rectArray[i] != this && checkCollision(this, rectArray[i])) {
+				this.y = prevy;
+			}
 		}
 	}
 	render() {
@@ -32,6 +46,11 @@ class Rectangle {
 }
 
 var player = new Rectangle(10, 10, 20, 20);
+var rect1 = new Rectangle(40, 40, 20, 10);
+var rectArray = [];
+rectArray.push(player);
+rectArray.push(rect1);
+rectArray.push(new Rectangle(50,60,10,10));
 
 window.onload = function() {
 	canvas = document.getElementById("canvas");
@@ -44,14 +63,15 @@ window.onload = function() {
 }
 
 function main() {
-	//update
-	player.update();
-	
 	//clear screen
 	ctx.fillStyle = "#FFF";
 	ctx.fillRect(0,0,100,100);
-	//render
-	player.render();
+	
+	//update and render
+	for (var i = 0; i < rectArray.length; i++) {
+		rectArray[i].update();
+		rectArray[i].render();
+	}
 }
 
 function keydown(e) {
@@ -86,4 +106,11 @@ function keyup(e) {
 			player.down = false;
 			break;
 	}
+}
+
+function checkCollision(rect1, rect2) {
+	return  (rect1.x < rect2.x + rect2.width &&
+			rect1.x + rect1.width > rect2.x &&
+			rect1.y < rect2.y + rect2.height &&
+			rect1.height + rect1.y > rect2.y);
 }
