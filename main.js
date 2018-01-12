@@ -51,6 +51,19 @@ class Rectangle {
 	}
 }
 
+Mouse = function() {
+	var mouse = {};
+	mouse.x = 0;
+	mouse.y = 0;
+	
+	function move(e) {
+		mouse.x = e.clientX;
+		mouse.y = e.clientY;
+	}
+	canvas.addEventListener('mousemove', move);
+	return mouse;
+}
+
 var coinImage = new Image();
 coinImage.src = "coin.png";
 
@@ -67,10 +80,12 @@ class Coin extends Rectangle {
 //adding things
 var player = new Rectangle(10, 10, 20, 20);
 var rect1 = new Rectangle(40, 40, 20, 10);
+var mouseRect = new Rectangle(200, 70, 30, 30);
 var rectArray = [];
 var coinArray = [];
 rectArray.push(player);
 rectArray.push(rect1);
+rectArray.push(mouseRect);
 coinArray.push(new Coin(50,60,100,100));
 
 window.onload = function() {
@@ -78,6 +93,8 @@ window.onload = function() {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 	ctx = canvas.getContext("2d");
+	ctx.imageSmoothingEnabled = false;
+	mouse = new Mouse();
 	
 	document.addEventListener("keydown", keydown);
 	document.addEventListener("keyup", keyup);
@@ -99,6 +116,14 @@ function main() {
 		coinArray[i].update();
 		coinArray[i].render();
 	}
+	
+	mouseRect.x = mouse.x;
+	mouseRect.y = mouse.y;
+	
+	//text
+	ctx.fillStyle = "#3F3";
+	ctx.font = "30px Arial";
+	ctx.fillText("Hello World", 10, 200);
 }
 
 function keydown(e) {
